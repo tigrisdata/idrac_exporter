@@ -458,6 +458,10 @@ func (client *Client) RefreshSystem(mc *Collector, ch chan<- prometheus.Metric) 
 }
 
 func (client *Client) RefreshManager(mc *Collector, ch chan<- prometheus.Metric) bool {
+	if client.path.Manager == "" {
+		return true
+	}
+
 	mgr := ManagerResponse{}
 	ok := client.redfish.Get(client.path.Manager, &mgr)
 	if !ok {
@@ -484,6 +488,10 @@ func (client *Client) RefreshManager(mc *Collector, ch chan<- prometheus.Metric)
 }
 
 func (client *Client) RefreshProcessors(mc *Collector, ch chan<- prometheus.Metric) bool {
+	if client.path.Processors == "" {
+		return true
+	}
+
 	group := GroupResponse{}
 	ok := client.redfish.Get(client.path.Processors, &group)
 	if !ok {
@@ -525,6 +533,10 @@ func (client *Client) RefreshProcessors(mc *Collector, ch chan<- prometheus.Metr
 }
 
 func (client *Client) RefreshNetwork(mc *Collector, ch chan<- prometheus.Metric) bool {
+	if client.path.Network == "" {
+		return true
+	}
+
 	group := GroupResponse{}
 	ok := client.redfish.Get(client.path.Network, &group)
 	if !ok {
@@ -707,7 +719,7 @@ func (client *Client) RefreshPowerOld(mc *Collector, ch chan<- prometheus.Metric
 		}
 
 		mc.NewPowerSupplyInputVoltage(ch, psu.LineInputVoltage, id)
-		mc.NewPowerSupplyCapacityWatts(ch, psu.PowerCapacityWatts, id)
+		mc.NewPowerSupplyCapacityWatts(ch, float64(psu.PowerCapacityWatts), id)
 		mc.NewPowerSupplyEfficiencyPercent(ch, psu.EfficiencyPercent, id)
 
 	}
@@ -832,6 +844,10 @@ func (client *Client) RefreshEventLog(mc *Collector, ch chan<- prometheus.Metric
 }
 
 func (client *Client) RefreshStorage(mc *Collector, ch chan<- prometheus.Metric) bool {
+	if client.path.Storage == "" {
+		return true
+	}
+
 	group := GroupResponse{}
 	ok := client.redfish.Get(client.path.Storage, &group)
 	if !ok {
@@ -972,6 +988,10 @@ func (client *Client) RefreshStorage(mc *Collector, ch chan<- prometheus.Metric)
 }
 
 func (client *Client) RefreshMemory(mc *Collector, ch chan<- prometheus.Metric) bool {
+	if client.path.Memory == "" {
+		return true
+	}
+
 	group := GroupResponse{}
 	ok := client.redfish.Get(client.path.Memory, &group)
 	if !ok {

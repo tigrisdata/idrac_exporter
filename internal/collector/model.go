@@ -229,7 +229,7 @@ type ThermalResponse struct {
 type Fan struct {
 	Name            string       `json:"Name"`
 	FanName         string       `json:"FanName"`
-	MemberId        string       `json:"MemberId"`
+	MemberId        xstring      `json:"MemberId"`
 	Assembly        Odata        `json:"Assembly"`
 	HotPluggable    bool         `json:"HotPluggable"`
 	MaxReadingRange any          `json:"MaxReadingRange"`
@@ -267,7 +267,7 @@ func (f *Fan) GetUnits() string {
 
 func (f *Fan) GetId(fallback int) string {
 	if len(f.MemberId) > 0 {
-		return f.MemberId
+		return f.MemberId.String()
 	}
 	return strconv.Itoa(fallback)
 }
@@ -275,7 +275,7 @@ func (f *Fan) GetId(fallback int) string {
 type Temperature struct {
 	Name                string  `json:"Name"`
 	Number              int     `json:"Number"`
-	MemberId            string  `json:"MemberId"`
+	MemberId            xstring `json:"MemberId"`
 	ReadingCelsius      float64 `json:"ReadingCelsius"`
 	MaxReadingRangeTemp float64 `json:"MaxReadingRangeTemp"`
 	MinReadingRangeTemp float64 `json:"MinReadingRangeTemp"`
@@ -286,7 +286,7 @@ type Temperature struct {
 
 func (t *Temperature) GetId(fallback int) string {
 	if len(t.MemberId) > 0 {
-		return t.MemberId
+		return t.MemberId.String()
 	}
 	if t.Number > 0 {
 		return strconv.Itoa(t.Number)
@@ -680,7 +680,7 @@ type PowerSupplyUnit struct {
 	PowerOutputWatts     float64      `json:"PowerOutputWatts"`
 	LastPowerOutputWatts float64      `json:"LastPowerOutputWatts"`
 	PowerInputWatts      float64      `json:"PowerInputWatts"`
-	PowerCapacityWatts   float64      `json:"PowerCapacityWatts"`
+	PowerCapacityWatts   xfloat64     `json:"PowerCapacityWatts"`
 	LineInputVoltage     float64      `json:"LineInputVoltage"`
 	LineInputVoltageType string       `json:"LineInputVoltageType"`
 	Manufacturer         string       `json:"Manufacturer"`
