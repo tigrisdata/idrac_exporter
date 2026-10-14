@@ -36,6 +36,7 @@ type Collector struct {
 	SystemHealth          *prometheus.Desc
 	SystemIndicatorLED    *prometheus.Desc // This attribute is deprecated in Redfish
 	SystemIndicatorActive *prometheus.Desc
+	ChassisIntrusion      *prometheus.Desc
 	SystemMemorySize      *prometheus.Desc
 	SystemCpuCount        *prometheus.Desc
 	SystemBiosInfo        *prometheus.Desc
@@ -169,6 +170,11 @@ func NewCollector() *Collector {
 			prometheus.BuildFQName(prefix, "system", "indicator_active"),
 			"State of the system location indicator",
 			nil, nil,
+		),
+		ChassisIntrusion: prometheus.NewDesc(
+			prometheus.BuildFQName(prefix, "chassis", "intrusion"),
+			"Chassis intrusion sensor state, 1 when an intrusion was detected",
+			[]string{"status"}, nil,
 		),
 		SystemMemorySize: prometheus.NewDesc(
 			prometheus.BuildFQName(prefix, "system", "memory_size_bytes"),
@@ -537,6 +543,7 @@ func (collector *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.SystemHealth
 	ch <- collector.SystemIndicatorLED
 	ch <- collector.SystemIndicatorActive
+	ch <- collector.ChassisIntrusion
 	ch <- collector.SystemMemorySize
 	ch <- collector.SystemCpuCount
 	ch <- collector.SystemBiosInfo

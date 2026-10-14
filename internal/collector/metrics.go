@@ -42,6 +42,16 @@ func health2value(health string) int {
 	return 10
 }
 
+func intrusion2value(status string) int {
+	switch status {
+	case "":
+		return -1
+	case "Normal":
+		return 0
+	}
+	return 1
+}
+
 func linkstatus2value(status string) int {
 	switch status {
 	case "Up", "LinkUp":
@@ -100,6 +110,22 @@ func (mc *Collector) NewSystemIndicatorActive(ch chan<- prometheus.Metric, m *Sy
 		mc.SystemIndicatorActive,
 		prometheus.GaugeValue,
 		value,
+	)
+}
+
+func (mc *Collector) NewChassisIntrusion(ch chan<- prometheus.Metric, m *ChassisResponse) {
+	if m.PhysicalSecurity == nil {
+		return
+	}
+	value := intrusion2value(m.PhysicalSecurity.IntrusionSensor)
+	if value < 0 {
+		return
+	}
+	ch <- prometheus.MustNewConstMetric(
+		mc.ChassisIntrusion,
+		prometheus.GaugeValue,
+		float64(value),
+		m.PhysicalSecurity.IntrusionSensor,
 	)
 }
 
