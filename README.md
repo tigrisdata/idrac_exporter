@@ -97,7 +97,7 @@ The exporter can expose the metrics described in the sections below. For each me
 * 2 = Critical
 
 ### System
-These metrics include power, health, and LED state, total memory size, number of physical processors, BIOS version and machine information.
+These metrics include power, health, and LED state, total memory size, number of physical processors, BIOS version, machine information and the chassis intrusion sensor. The intrusion metric is 0 when the sensor reads `Normal` and 1 when an intrusion was detected; it is omitted when the chassis has no intrusion sensor.
 
 ```c
 idrac_system_power_on
@@ -108,6 +108,7 @@ idrac_system_memory_size_bytes
 idrac_system_cpu_count{model}
 idrac_system_bios_info{version}
 idrac_system_machine_info{manufacturer,model,serial,sku}
+idrac_chassis_intrusion{status}
 ```
 
 ### Sensors

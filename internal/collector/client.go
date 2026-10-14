@@ -34,6 +34,7 @@ type Client struct {
 	version int
 	path    struct {
 		System           string
+		Chassis          string
 		Thermal          string
 		ThermalSubsystem string
 		Power            string
@@ -157,6 +158,7 @@ func (client *Client) findAllEndpoints() bool {
 	}
 
 	// Paths
+	client.path.Chassis = path
 	client.path.Storage = system.Storage.OdataId
 	client.path.Memory = system.Memory.OdataId
 	client.path.Network = chassis.NetworkAdapters.OdataId
@@ -453,6 +455,15 @@ func (client *Client) RefreshSystem(mc *Collector, ch chan<- prometheus.Metric) 
 	mc.NewSystemCpuCount(ch, &resp)
 	mc.NewSystemBiosInfo(ch, &resp)
 	mc.NewSystemMachineInfo(ch, &resp)
+
+	if client.path.Chassis != "" {
+		chassis := ChassisResponse{}
+		ok = client.redfish.Get(client.path.Chassis, &chassis)
+		if !ok {
+			return false
+		}
+		mc.NewChassisIntrusion(ch, &chassis)
+	}
 
 	return true
 }
