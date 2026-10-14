@@ -707,7 +707,7 @@ func (client *Client) RefreshPowerOld(mc *Collector, ch chan<- prometheus.Metric
 		}
 
 		mc.NewPowerSupplyInputVoltage(ch, psu.LineInputVoltage, id)
-		mc.NewPowerSupplyCapacityWatts(ch, psu.PowerCapacityWatts, id)
+		mc.NewPowerSupplyCapacityWatts(ch, float64(psu.PowerCapacityWatts), id)
 		mc.NewPowerSupplyEfficiencyPercent(ch, psu.EfficiencyPercent, id)
 
 	}

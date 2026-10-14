@@ -74,6 +74,26 @@ func (w *xstring) String() string {
 	return string(*w)
 }
 
+// When unmarshalling JSON, the "xfloat64" type can be one of the following
+// - nil
+// - float64
+// - string containing a number
+// Anything else decodes to zero rather than failing the whole response.
+type xfloat64 float64
+
+func (f *xfloat64) UnmarshalJSON(data []byte) error {
+	var x any
+
+	err := json.Unmarshal(data, &x)
+	if err != nil {
+		return err
+	}
+
+	v, _ := asFloat64(x)
+	*f = xfloat64(v)
+	return nil
+}
+
 func asPtr[T any](v T) *T {
 	return &v
 }
