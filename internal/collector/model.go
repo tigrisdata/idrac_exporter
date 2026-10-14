@@ -3,6 +3,7 @@ package collector
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -173,6 +174,23 @@ type Processor struct {
 			} `json:"DellProcessor"`
 		} `json:"Dell"`
 	} `json:"Oem"`
+}
+
+// FillIdentity copies the manufacturer, model, serial number and SKU from the
+// chassis wherever the system leaves them empty, as JBOD enclosures do.
+func (s *SystemResponse) FillIdentity(c *ChassisResponse) {
+	if strings.TrimSpace(s.Manufacturer) == "" {
+		s.Manufacturer = c.Manufacturer
+	}
+	if strings.TrimSpace(s.Model) == "" {
+		s.Model = c.Model
+	}
+	if strings.TrimSpace(s.SerialNumber) == "" {
+		s.SerialNumber = c.SerialNumber
+	}
+	if strings.TrimSpace(s.SKU) == "" {
+		s.SKU = c.SKU
+	}
 }
 
 type ChassisResponse struct {

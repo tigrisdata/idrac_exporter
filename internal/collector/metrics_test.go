@@ -34,3 +34,22 @@ func TestDecodeChassisPhysicalSecurity(t *testing.T) {
 		t.Errorf("got %q, want %q", got, "HardwareIntrusion")
 	}
 }
+
+func TestFillIdentity(t *testing.T) {
+	chassis := ChassisResponse{Manufacturer: "HGST", Model: "H4102-J", SerialNumber: "SN-CHASSIS", SKU: "SKU-CHASSIS"}
+
+	empty := SystemResponse{}
+	empty.FillIdentity(&chassis)
+	if empty.Manufacturer != "HGST" || empty.Model != "H4102-J" || empty.SerialNumber != "SN-CHASSIS" || empty.SKU != "SKU-CHASSIS" {
+		t.Errorf("empty system: got %q %q %q %q", empty.Manufacturer, empty.Model, empty.SerialNumber, empty.SKU)
+	}
+
+	full := SystemResponse{Manufacturer: "Supermicro", Model: "AS -1115HS-TNR", SerialNumber: " ", SKU: "SKU-SYSTEM"}
+	full.FillIdentity(&chassis)
+	if full.Manufacturer != "Supermicro" || full.Model != "AS -1115HS-TNR" || full.SKU != "SKU-SYSTEM" {
+		t.Errorf("populated system fields were overwritten: %q %q %q", full.Manufacturer, full.Model, full.SKU)
+	}
+	if full.SerialNumber != "SN-CHASSIS" {
+		t.Errorf("blank serial: got %q, want %q", full.SerialNumber, "SN-CHASSIS")
+	}
+}
