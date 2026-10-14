@@ -795,7 +795,7 @@ func ResetGroup(group string) {
 func GetCollector(target, group string) (*Collector, error) {
 	mu.Lock()
 	collector, ok := collectors[target]
-	if !ok {
+	if !ok || collector.group != group {
 		collector = NewCollector()
 		collector.group = group
 		collectors[target] = collector

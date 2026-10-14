@@ -454,16 +454,22 @@ func (client *Client) RefreshSystem(mc *Collector, ch chan<- prometheus.Metric) 
 	mc.NewSystemMemorySize(ch, &resp)
 	mc.NewSystemCpuCount(ch, &resp)
 	mc.NewSystemBiosInfo(ch, &resp)
-	mc.NewSystemMachineInfo(ch, &resp)
 
-	if client.path.Chassis != "" {
-		chassis := ChassisResponse{}
-		ok = client.redfish.Get(client.path.Chassis, &chassis)
-		if !ok {
-			return false
-		}
-		mc.NewChassisIntrusion(ch, &chassis)
+	if client.path.Chassis == "" {
+		mc.NewSystemMachineInfo(ch, &resp)
+		return true
 	}
+
+	chassis := ChassisResponse{}
+	ok = client.redfish.Get(client.path.Chassis, &chassis)
+	if !ok {
+		mc.NewSystemMachineInfo(ch, &resp)
+		return false
+	}
+
+	resp.FillIdentity(&chassis)
+	mc.NewSystemMachineInfo(ch, &resp)
+	mc.NewChassisIntrusion(ch, &chassis)
 
 	return true
 }
